@@ -201,9 +201,17 @@ document.addEventListener("DOMContentLoaded", function () {
       return lang.startsWith("zh") || lang.startsWith("ja") || lang.startsWith("ko");
     }
 
-    const encodeCJK = (str) => str.replace(/[\x00-\x7F]/g, "").split("");
-    const encodeDefault = (str) => (""+str).toLocaleLowerCase().split(/[\p{Z}\p{S}\p{P}\p{C}]+/u);
-    const encodeFunction = isCJK() ? encodeCJK : encodeDefault;
+    // const encodeCJK = (str) => str.replace(/[\x00-\x7F]/g, "").split("");
+    // const encodeDefault = (str) => ("" + str).toLocaleLowerCase().split(/[\p{Z}\p{S}\p{P}\p{C}]+/u);
+    
+    const encodeFunction = (str) => {
+      return ("" + str)
+        .toLocaleLowerCase()
+        .normalize("NFKC")
+        .split(/([\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]+)/gu)
+        .flatMap(token => token.match(/[\p{L}\p{N}]+/gu) || [])
+        .filter(Boolean);
+    };
 
     window.pageIndex = new FlexSearch.Document({
       tokenize,
