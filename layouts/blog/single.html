@@ -38,6 +38,7 @@
         <div class="content">
           {{ .Content }}
         </div>
+        {{ partial "components/share.html" . }}
         {{ partial "components/last-updated.html" . }}
         {{ .Scratch.Set "reversePagination" true }}
         {{ partial "components/pager.html" . }}
